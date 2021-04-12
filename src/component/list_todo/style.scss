@@ -1,0 +1,146 @@
+.unfinished {
+  text-decoration: line-through;
+  color: rgb(185, 70, 70);
+}
+.container {
+  width: 400px;
+  height: 500px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.show_check {
+  display: flex;
+  align-items: center;
+  height: 55px;
+  padding-left: 5px;
+  transition: all 0.3s;
+  &:hover {
+    background-color: rgba(212, 204, 204, 0.3);
+    border-radius: 3px;
+    transition: all 0.3s;
+    .icon_delete {
+      display: inline-block;
+    }
+  }
+}
+.icon {
+  font-size: 2.2rem;
+  cursor: pointer;
+}
+.content {
+  margin-top: 20px;
+  height: 380px;
+  position: relative;
+  overflow: auto;
+
+  border-bottom: 1px solid #eee;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.list_data {
+  margin-left: 20px;
+  flex: 1 1 auto;
+  cursor: pointer;
+  color: rgb(76, 119, 201);
+}
+
+.text_data {
+  font-size: 1.8rem;
+  font-weight: 530;
+  text-align: justify;
+  word-break: break-word;
+
+  margin-right: 10px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.icon_top {
+  color: red;
+}
+
+.positon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.form_fix {
+  margin-right: 7px;
+}
+
+.ip_hide {
+  border: none;
+  background-color: rgb(121, 61, 61, 0);
+  border-bottom: 1px solid rgb(36, 34, 34);
+  font-size: 1.6rem;
+
+  &:focus {
+    outline: none;
+  }
+  height: 100%;
+  width: 100%;
+}
+
+.fa-trash-alt {
+  margin-right: 10px;
+  font-size: 1.8rem;
+  cursor: pointer;
+  display: none;
+  transition: all 0.3s;
+  &:hover {
+    color: rgb(180, 61, 61);
+  }
+}
+
+.input_add {
+  background-color: white;
+  padding: 10px 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.No_list {
+  font-size: 1.6rem;
+  text-align: center;
+  padding: 20px 0;
+  font-weight: 550;
+  color: rgb(117, 49, 49);
+}
+
+.bt_check {
+}
+
+.text_time {
+  display: flex;
+  align-items: center;
+  label {
+    width: 85%;
+  }
+  span {
+    width: 15%;
+    font-size: 1.1rem;
+    color: rgb(155, 47, 47);
+  }
+}
+
+.tranfrom {
+  animation-name: run;
+  animation-duration: 0.6s;
+}
+
+@keyframes run {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(110%);
+  }
+}

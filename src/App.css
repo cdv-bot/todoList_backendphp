@@ -1,0 +1,51 @@
+.App {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  background-image: url("https://imgproxy4.cdnforo.com/k6YzbttmhNUjGjCkpm-5BFfRFQaDHx4ZOFRZyQUin3g/w:600/plain/https://thuthuatnhanh.com/wp-content/uploads/2020/01/background-powerpoint-don-gian-dep-voi-nen-xanh.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+label {
+  cursor: pointer;
+}
+
+html {
+  font-size: 62.5%;
+  line-height: 1.6rem;
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+}
+.hd {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(226, 86, 86);
+  padding: 10px;
+  right: 0;
+  top: 0;
+}
+.hd > span {
+  font-size: 1.3rem;
+  color: aliceblue;
+  text-shadow: 1px 1px 1px black;
+}

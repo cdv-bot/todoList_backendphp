@@ -1,0 +1,46 @@
+.submit_form {
+  display: flex;
+  align-items: center;
+  .ip_submit {
+    width: 100%;
+    padding: 0;
+    height: 38px;
+    border-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border: 1px solid rgb(24, 21, 15);
+    border-right: none;
+    padding-left: 10px;
+    font-size: 1.4rem;
+    &:focus {
+      outline: none;
+
+      border: 1px solid rgb(44, 54, 201);
+      border-right: none;
+    }
+  }
+  .fa-plus-square {
+    font-size: 4.2rem;
+    margin-left: 5px;
+    color: rgb(44, 54, 201);
+    cursor: pointer;
+  }
+  .bt_submit {
+    height: 38px;
+    width: 38px;
+    border: none;
+    background-color: rgb(95, 95, 194);
+    cursor: pointer;
+
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    &:focus {
+      outline: none;
+    }
+    .icons {
+      font-size: 1.7rem;
+      color: white;
+    }
+  }
+}
