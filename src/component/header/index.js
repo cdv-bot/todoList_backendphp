@@ -1,6 +1,7 @@
 import './style.scss';
 import React, { Component } from 'react';
-import productApi from '../apis/productsApi';
+import { connect } from 'react-redux';
+import { emendList } from './../Actions';
 
 class Header extends Component {
   constructor(props) {
@@ -24,17 +25,17 @@ class Header extends Component {
 
   handleSubmit = e => {
     const { text } = this.state;
-    e.preventDefault();
-    if (text.trim() !== "") {
-      productApi.setAdd({
-        content: text
-      }).then(data => {
-        this.props.handlerValue(data)
-      })
+    const { emendListDp } = this.props;
 
+    e.preventDefault();
+
+    if (text.trim() !== "") {
+      emendListDp(text);
       this.setState({
         text: ""
       });
+      this.props.refInput();
+
     } else {
       this.setState({
         text: ""
@@ -56,4 +57,9 @@ class Header extends Component {
   }
 }
 
-export default Header;
+const mapDispatchToProps = dispatch => {
+  return {
+    emendListDp: (data) => dispatch(emendList(data))
+  }
+}
+export default connect(null, mapDispatchToProps)(Header);

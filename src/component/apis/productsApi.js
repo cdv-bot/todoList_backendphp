@@ -3,31 +3,35 @@ import axiosClient from './axiosClient';
 
 class ProductApi {
   setAdd = (params) => {
-    const url = '/add.php';
-    return axiosClient.get(url, { params });
+    const url = '/todolist';
+    return axiosClient.post(url, params);
   };
   getList = () => {
-    const url = '/show.php';
+    const url = '/todolist';
     return axiosClient.get(url);
   };
-  updateList = (params) => {
-    const url = '/repair.php';
+  getListPage = () => {
+    const url = '/todolist';
+    return axiosClient.get(url);
+  };
+  getDone = (params) => {
+    const url = '/todolist';
     return axiosClient.get(url, { params });
   };
-  delete = (params) => {
-    const url = '/delete.php';
-    return axiosClient.get(url, { params });
-  };
-  checked = (params) => {
-    const url = '/checked.php';
-    return axiosClient.get(url, { params });
-  };
-  endpoint = (params) => {
-    const url = '/endpoint.php';
-    return axiosClient.get(url, { params });
+  putItem = (params, id) => {
+    const url = '/todolist';
+    return axiosClient.put(`${url}/${id}`, params);
   }
-  deleteAll = (params) => {
-    const url = '/deleteAll.php';
+  checkItem = (params, id) => {
+    const url = '/todolist';
+    return axiosClient.put(`${url}/${id}`, params);
+  }
+  deleteItem = (id) => {
+    const url = '/todolist';
+    return axiosClient.delete(`${url}/${id}`);
+  }
+  nextPage = (params) => {
+    const url = '/todolist';
     return axiosClient.get(url, { params });
   }
 

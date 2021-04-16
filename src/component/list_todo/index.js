@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
+import LazyLoad, { lazyload } from 'react-lazyload';
+import { connect } from 'react-redux';
 import productApi from '../apis/productsApi';
+import { LOADING } from '../constants/addTask';
 import Footer from '../footer';
 import Header from '../header';
+import { checkerItem, DataAddList, deleteItems, repairItem, numberPage } from './../Actions';
+import loading from './../loading/gif-leaf-loading-gif-MAIN.gif';
+import Item from './item';
 import './style.scss';
-
 
 class Todo extends Component {
   constructor(props) {
     super(props);
+    this.props.DataAddList(1);
     this.focusRef = React.createRef();
-
+    this.scroll = React.createRef();
     this.state = {
-      num: [],
       deleteId: null,
       toggle: {
         check: true,
@@ -24,41 +29,9 @@ class Todo extends Component {
     }
   }
 
-  componentDidMount() {
-    productApi.getList().then(x => {
-      this.setState({
-        num: x
-      })
-    });
-  }
-
-
-  // thêm value
-  handleValues = async x => {
-    const { num } = this.state;
-    let arr = [...num, x];
-    this.setState({
-      num: arr
-    });
-    this.handeAll();
-  }
-
   //hoàn thành
   handleCheck = async (id, check) => {
-    if (check === "1") {
-      check = 0;
-    }
-    if (check === "0") {
-      check = 1;
-    }
-    let data = await productApi.endpoint({
-      id,
-      check: check
-    })
-
-    this.setState({
-      num: data
-    })
+    this.props.checkerItem(check, id);
   }
 
   // _---------------------
@@ -88,20 +61,13 @@ class Todo extends Component {
   }
 
   //submit Fix
-  submitFix = async e => {
+  submitFix = e => {
     const { valueFix, toggle } = this.state;
     e.preventDefault();
-
     if (valueFix.trim() !== "") {
-      let data = await productApi.updateList({
-        content: valueFix,
-        id: toggle.id
-      });
-      this.setState({
-        num: data
-      });
+      this.props.repairItem(valueFix, toggle.id);
+    };
 
-    }
     this.setState({
       toggle: {
         check: false,
@@ -112,16 +78,13 @@ class Todo extends Component {
 
 
   //delete one
-  handeDeleteOne = async (id) => {
-    let data = await productApi.delete({
-      id
-    });
+  handeDeleteOne = id => {
     this.setState({
       deleteId: id
     })
     setTimeout(() => {
+      this.props.deleteItems(id);
       this.setState({
-        num: data,
         deleteId: null
       });
     }, 500)
@@ -129,16 +92,12 @@ class Todo extends Component {
 
 
   //outfocus 
-  outFocus = async x => {
+  outFocus = x => {
     const { valueFix, toggle } = this.state;
     if (valueFix.trim() !== "") {
-      let data = await productApi.updateList({
-        content: valueFix,
-        id: toggle.id
-      });
+      this.props.repairItem(valueFix, toggle.id);
 
       this.setState({
-        num: data,
         toggle: {
           check: false,
           id: null
@@ -155,37 +114,6 @@ class Todo extends Component {
   }
 
   // -----------footer
-  //đã hoàn thành
-  handeDone = async () => {
-    let data = await productApi.checked({
-      check: 1
-    });
-
-    this.setState({
-      num: data
-    })
-  }
-
-  //chưa xong
-  handeUfinished = async () => {
-    let data = await productApi.checked({
-      check: 0
-    });
-
-    this.setState({
-      num: data
-    })
-  }
-
-  //xóa
-  handeDelete = async () => {
-    let data = await productApi.deleteAll({
-      check: 1
-    });
-    this.setState({
-      num: data
-    })
-  }
 
   //show all
   handeAll = async () => {
@@ -196,43 +124,45 @@ class Todo extends Component {
   }
 
 
-  handleTime = (day) => {
-
+  handleTime = (days) => {
     let today = new Date();
-    let inday = new Date(day);
+    let inday = new Date(days);
+    let time = today.getTime() - inday.getTime();
 
-    let nam = today.getFullYear() - inday.getFullYear();
-    let month = today.getMonth() - inday.getMonth();
-    let days = today.getDay() - inday.getDay();
-    let hours = today.getHours() - inday.getHours();
-    let min = today.getMinutes() - inday.getMinutes();
-    let sec = today.getSeconds() - inday.getSeconds();
+    let sec = time / 1000;
+    let min = time / 1000 / 60;
+    let hours = time / 1000 / 60 / 60;
+    let day = time / 1000 / 60 / 60 / 24;
+    let month = time / 1000 / 60 / 60 / 24 / 30;
+    let year = time / 1000 / 60 / 60 / 24 / 30 / 12;
 
-    if (nam > 0) {
-      return ` ${nam} năm`;
-    }
-    if (month > 0) {
-      return `${month} tháng`;
-    }
-    if (days > 0) {
-      return `${days} ngày`;
-    }
-    if (hours > 0) {
-      return `${hours} giờ`;
-    }
-    if (min > 0) {
-      return `${min} phút`;
-    }
-    if (sec > 0) {
-      return `${sec} giây`;
+    if (sec < 0) {
+      return "bây giờ";
+    } else if (sec < 60) {
+      return `${Math.floor(sec)} giây`;
+    } else if (min < 60) {
+      return `${Math.floor(min)} phút`;
+    } else if (hours < 24) {
+      return `${Math.floor(hours)} giờ`;
+    } else if (day < 30) {
+      return `${Math.floor(day)} ngày`;
+    } else if (month < 12) {
+      return `${Math.floor(month)} tháng`;
     } else {
-      return `bây giờ`
+      return `${Math.floor(year)} năm`;
     }
+
+  }
+
+
+  handleScroll = () => {
+    this.scroll.scrollIntoView();
   }
 
   show = () => {
-    const { valueFix, num, toggle, deleteId } = this.state;
-    let sort = [...num];
+    const { valueFix, toggle, deleteId } = this.state;
+    const { arrList } = this.props;
+    let sort = [...arrList];
     if (sort.length === 0) return <div className="No_list">Không có mục nào !!!</div>;
     sort.sort(function (a, b) {
       return b.id - a.id;
@@ -240,10 +170,16 @@ class Todo extends Component {
     let arr = [];
     arr = sort.map((key, index) => {
       return (
-        <div key={index} className={`show_check ${deleteId === key.id ? "tranfrom" : ""}`}>
-          <div id={key.id} onClick={() => this.handleCheck(key.id, key.checks)} >
+        <div
+          key={index}
+          className={`show_check ${deleteId === key.id ? "tranfrom" : ""}`}
+        >
+          <div
+            id={key.id}
+            onClick={() => this.handleCheck(key.id, key.checks)}
+          >
             {
-              (key.checks !== "0" ? true : false) ?
+              (key.checks) ?
                 <i className="fas fa-check-square icon icon_top" ></i>
                 : <i className="fas fa-check-square icon " ></i>
             }
@@ -252,17 +188,26 @@ class Todo extends Component {
             {
               // toggle.id !== key.id
               (toggle.id !== key.id) ?
-                // onClick = {() => this.handleCheck(key.id)}
                 <div className="text_time">
-                  <label className={`text_data ${key.checks === '1' ? 'unfinished' : ''}`}>{key.content}</label>
-                  <span>{this.handleTime(key.day)}</span>
+                  <label className={`text_data ${key.checks ? 'unfinished' : ''}`}>{key.content}</label>
+                  <span>{this.handleTime(key.time)}</span>
                 </div>
                 : <form onSubmit={this.submitFix} className="form_fix">
-                  <input className="ip_hide" type="text" ref={this.focusRef} value={valueFix} onBlur={() => this.outFocus(key.id)} onChange={this.onValueFix} />
+                  <input
+                    className="ip_hide"
+                    type="text"
+                    ref={this.focusRef}
+                    value={valueFix}
+                    onBlur={() => this.outFocus(key.id)}
+                    onChange={this.onValueFix}
+                  />
                 </form>
             }
           </div>
-          <i className="far fa-trash-alt icon_delete" onClick={() => this.handeDeleteOne(key.id)}></i>
+          <i
+            className="far fa-trash-alt icon_delete"
+            onClick={() => this.handeDeleteOne(key.id)}
+          ></i>
         </div >
       )
     })
@@ -271,21 +216,26 @@ class Todo extends Component {
 
 
   render() {
+    const { loadingShow } = this.props;
+
     return (
       <div className="All">
+        <div className={`loading ${loadingShow ? 'hider' : ''}`}>
+          <img src={loading} alt="im" />
+        </div>
         <div className="input_add">
-          <Header handlerValue={this.handleValues} />
+          <Header handlerValue={this.handleValues} refInput={this.handleScroll} />
         </div>
         <div className="container">
           <div className="content" >
-            <div className="positon">
+            <div className="positon" ref={(ref) => this.scroll = ref}>
               {
                 this.show()
               }
             </div>
           </div>
-          <div className="bt_check">
-            <Footer sumCount={this.state.num} done={this.handeDone} unfinished={this.handeUfinished} deletes={this.handeDelete} all={this.handeAll} />
+          <div className="bt_check" counts={this.props.arrList}>
+            <Footer />
           </div>
         </div>
       </div>
@@ -293,7 +243,20 @@ class Todo extends Component {
   }
 }
 
-export default Todo;
+const mapStateToProps = (state) => {
+  return {
+    arrList: state.list,
+    loadingShow: state.loadings.loading
+  }
+}
+const mapDispatchToProps = {
+  DataAddList,
+  repairItem,
+  checkerItem,
+  deleteItems,
+  numberPage
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Todo);
 
 
 

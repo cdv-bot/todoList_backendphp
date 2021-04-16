@@ -1,29 +1,24 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import './App.css';
-import Todo from './component/list_todo';
+import Loading from './component/loading';
+import Login from './component/login';
+
+// import Todo from './component/list_todo';
+const Todo = React.lazy(() => {
+  return new Promise(res => {
+    setTimeout(() => res(import('./component/list_todo')), 800);
+  })
+})
+// import('./component/list_todo'));
 function App() {
 
   return (
     <div className="App">
-      <Todo />
-      {/* <div className="hd">
-        <span>
-          double click : Để chỉnh sửa.
-        </span>
-        <span>
-          click : Đánh dấu hoàn thành công việc.
-        </span>
-        <span>
-          Đã hoàn thành : Hiện các mục đã hoàn thành công việc.
-        </span>
-        <span>
-          Chưa hoàn thành : Hiện các việc chưa hoàn thành.
-        </span>
-        <span>
-          Xóa đã hoàn thành : Xóa các mục đã hoàn thành.
-        </span>
-      </div> */}
+      <Suspense fallback={<Loading />}>
+        <Todo />
+        {/* <Login /> */}
+      </Suspense>
     </div>
   );
 }

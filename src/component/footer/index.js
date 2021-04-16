@@ -1,71 +1,76 @@
 import React, { Component } from 'react';
-import productApi from '../apis/productsApi';
 import './style.scss';
+import { doneItem, unfinishedItem, DataAddList, deleteItemsAll, nextPage, numberPage } from './../Actions';
+import { connect } from 'react-redux';
+import productApi from '../apis/productsApi';
 
 class Footer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      count: 0
+      counts: 0
+    }
+  }
+  handleDone = () => {
+    const { doneItem } = this.props;
+    doneItem();
+  }
+  handleUnfinished = async () => {
+    // const { unfinishedItem } = this.props;
+    // unfinishedItem();
+
+
+    const { page } = this.props.page;
+    console.log(page)
+    let arr = await productApi.getListPage();
+    let count = Math.ceil(arr.length / 6);
+    if (page > 1) {
+      console.log(count)
+      this.props.nextPage(page - 1)
     }
   }
 
-  // componentDidMount() {
-  //   productApi.getList().then(data => {
-  //     let sus = data.filter(x => {
-  //     return x.checks === "1";
-  //   });
-  //   let all = data.length;
-  //   let key = `${sus.length} / ${all}`;
-  //     this.setState({
-  //       count: data.length
-  //     })
-  //   });
-  // }
+  handleDelete = async () => {
+    // const { deleteItemsAll } = this.props;
+    // deleteItemsAll();
 
 
 
-  handleDone = () => {
-    this.props.done();
-  }
-  handleUnfinished = () => {
-    this.props.unfinished();
-  }
-  handleDelete = () => {
-    this.props.deletes();
+    const { page } = this.props.page;
+    console.log(page)
+    let arr = await productApi.getListPage();
+    let count = Math.ceil(arr.length / 6);
+    if (page < count) {
+      console.log(count)
+      this.props.nextPage(page + 1)
+    }
+
   }
   handleAll = () => {
-    this.props.all();
+    const { DataAddList } = this.props;
+
+    DataAddList();
   }
 
-  count = async () => {
-    let data = await productApi.getList()
-    let sus = data.filter(x => {
-      return x.checks === "1";
-    });
-    let all = data.length;
-    let key = `${sus.length} / ${all}`;
-    return key;
-  }
 
   showCount = () => {
-    const { sumCount } = this.props;
-    let sus = sumCount.filter(x => {
-      return x.checks === "1";
+    const { listItem } = this.props;
+    let sus = listItem.filter(x => {
+      return x.checks === true;
     });
-    let all = sumCount.length;
+    let all = listItem.length;
     let key = `${sus.length} / ${all}`;
 
     return key;
   }
 
   percent = () => {
-    const { sumCount } = this.props;
-    let sus = sumCount.filter(x => {
-      return x.checks === "1";
+    const { listItem } = this.props;
+    let sus = listItem.filter(x => {
+      return x.checks === true;
     });
 
-    let percent = (sus.length / sumCount.length) / 0.01;
+    let percent = (sus.length / listItem.length) / 0.01;
     return percent;
   }
 
@@ -92,5 +97,20 @@ class Footer extends Component {
     );
   }
 }
-export default Footer;
+
+const statetoProps = state => {
+  return {
+    listItem: state.list,
+    page: state.page
+  }
+};
+const dispatchProps = {
+  doneItem,
+  unfinishedItem,
+  DataAddList,
+  deleteItemsAll,
+  nextPage,
+  numberPage
+}
+export default connect(statetoProps, dispatchProps)(Footer);
 
