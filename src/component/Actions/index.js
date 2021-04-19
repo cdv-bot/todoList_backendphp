@@ -51,9 +51,9 @@ export const emendList = (data) => {
         checks: false,
         user: "an"
       };
-      const response = await productApi.setAdd(obj);
-
-      dispatch(handleEmendList(response));
+      await productApi.setAdd(obj);
+      const response = await productApi.getList();
+      dispatch(handleAddList(response));
     } catch (error) {
       dispatch(handleEmendList([]));
     }
@@ -74,7 +74,9 @@ export const doneItem = () => {
     try {
       dispatch(showLoading(false));
       let response = await productApi.getDone({
-        checks: true
+        checks: true,
+        _page: 1,
+        _limit: 7
       });
       dispatch(handleDone(response));
       setTimeout(() => {
@@ -101,7 +103,9 @@ export const unfinishedItem = () => {
     try {
       dispatch(showLoading(false));
       let response = await productApi.getDone({
-        checks: false
+        checks: false,
+        _page: 1,
+        _limit: 7
       });
       dispatch(handleUnfinished(response));
       setTimeout(() => {
@@ -179,7 +183,6 @@ export const deleteItems = (id) => {
   return async dispatch => {
     try {
       dispatch(handleDelete(id));
-
       await productApi.deleteItem(id);
     } catch (error) {
       alert("Lỗi server");
@@ -229,15 +232,29 @@ const handleNextPage = (data) => {
   }
 }
 
-export const nextPage = (data) => {
+export const nextPage = (page, action) => {
   return async dispatch => {
     try {
-      const arr = await productApi.nextPage({
-        page: data,
-        limit: 6
-      });
-      dispatch(handleNextPage(arr));
-      dispatch(numberPage(data));
+      if (action === "ALL") {
+        const response = await productApi.nextPage(page,);
+        dispatch(handleNextPage(response));
+      }
+      if (action === true) {
+        let response = await productApi.getDone({
+          checks: true,
+          _page: page,
+          _limit: 7
+        });
+        dispatch(handleNextPage(response));
+      }
+      if (action === false) {
+        let response = await productApi.getDone({
+          checks: false,
+          _page: page,
+          _limit: 7
+        });
+        dispatch(handleNextPage(response));
+      }
     } catch (error) {
       alert("Lỗi server");
     }

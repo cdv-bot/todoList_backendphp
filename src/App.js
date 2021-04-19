@@ -1,8 +1,10 @@
 
 import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
 import Loading from './component/loading';
 import Login from './component/login';
+import Registration from './component/registration';
 
 // import Todo from './component/list_todo';
 const Todo = React.lazy(() => {
@@ -10,16 +12,32 @@ const Todo = React.lazy(() => {
     setTimeout(() => res(import('./component/list_todo')), 800);
   })
 })
-// import('./component/list_todo'));
+
+
 function App() {
 
   return (
-    <div className="App">
+    <Router>
       <Suspense fallback={<Loading />}>
-        <Todo />
-        {/* <Login /> */}
+        <div className="App">
+          <Switch>
+            <Route path="/" exact>
+              <Login />
+            </Route>
+            <Route path="/registration" exact>
+              <Registration />
+            </Route>
+            <Route path="/todo" exact>
+              <Todo />
+            </Route>
+          </Switch>
+        </div>
       </Suspense>
-    </div>
+      {/* <Todo /> */}
+      {/* <Login /> */}
+
+
+    </Router>
   );
 }
 

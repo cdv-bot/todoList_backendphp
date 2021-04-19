@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './style.scss';
 import { doneItem, unfinishedItem, DataAddList, deleteItemsAll, nextPage, numberPage } from './../Actions';
 import { connect } from 'react-redux';
-import productApi from '../apis/productsApi';
 
 class Footer extends Component {
   constructor(props) {
@@ -14,42 +13,23 @@ class Footer extends Component {
   handleDone = () => {
     const { doneItem } = this.props;
     doneItem();
+    this.props.actionPage(true);
   }
   handleUnfinished = async () => {
-    // const { unfinishedItem } = this.props;
-    // unfinishedItem();
-
-
-    const { page } = this.props.page;
-    console.log(page)
-    let arr = await productApi.getListPage();
-    let count = Math.ceil(arr.length / 6);
-    if (page > 1) {
-      console.log(count)
-      this.props.nextPage(page - 1)
-    }
+    const { unfinishedItem } = this.props;
+    unfinishedItem();
+    this.props.actionPage(false);
   }
 
   handleDelete = async () => {
-    // const { deleteItemsAll } = this.props;
-    // deleteItemsAll();
-
-
-
-    const { page } = this.props.page;
-    console.log(page)
-    let arr = await productApi.getListPage();
-    let count = Math.ceil(arr.length / 6);
-    if (page < count) {
-      console.log(count)
-      this.props.nextPage(page + 1)
-    }
-
+    const { deleteItemsAll } = this.props;
+    deleteItemsAll();
   }
   handleAll = () => {
     const { DataAddList } = this.props;
 
     DataAddList();
+    this.props.actionPage('ALL');
   }
 
 
@@ -100,7 +80,7 @@ class Footer extends Component {
 
 const statetoProps = state => {
   return {
-    listItem: state.list,
+    listItem: state.list.data,
     page: state.page
   }
 };

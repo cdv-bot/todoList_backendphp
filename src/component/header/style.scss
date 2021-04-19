@@ -44,3 +44,19 @@
     }
   }
 }
+.signout {
+  border: 1px solid #eee;
+  display: inline-block;
+  margin-left: 83%;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 2px;
+  cursor: pointer;
+  &:hover {
+    background: salmon;
+    color: white;
+  }
+  span {
+    margin-left: 4px;
+  }
+}
