@@ -2,7 +2,7 @@ import * as actions from '../constants/addTask';
 
 const initialState = {
   data: [],
-  pagination: null
+  pagination: null,
 };
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -14,9 +14,9 @@ const reducer = (state = initialState, action) => {
       const arr = [...state.data, payload];
       const list = {
         data: arr,
-        ...state
-      }
-      console.log(list)
+        ...state,
+      };
+      console.log(list);
       return list;
     }
     case actions.DONE_ITEM: {
@@ -30,17 +30,17 @@ const reducer = (state = initialState, action) => {
     case actions.REPAIR: {
       const { data, id } = action.payload;
       let arr = [...state.data];
-      const index = arr.findIndex(x => {
+      const index = arr.findIndex((x) => {
         return id === x.id;
       });
       arr[index] = {
         ...arr[index],
-        ...data
+        ...data,
       };
 
       let obj = {
         ...state,
-        data: arr
+        data: arr,
       };
       return obj;
     }
@@ -48,49 +48,50 @@ const reducer = (state = initialState, action) => {
       const { data, id } = action.payload;
 
       let arr = [...state.data];
-      const index = arr.findIndex(x => {
+      const index = arr.findIndex((x) => {
         return id === x.id;
       });
 
       arr[index] = {
         ...arr[index],
-        checks: !data
+        checks: !data,
       };
       let obj = {
         ...state,
-        data: arr
-      }
+        data: arr,
+      };
       return obj;
     }
 
     case actions.DELETE: {
-      const id = action.payload;
-      const index = state.data.findIndex(x => {
-        return id === x.id;
-      });
-      let arr = [...state.data];
-      arr.splice(index, 1);
-      let obj = {
-        ...state,
-        data: arr
-      }
-      return obj;
+      const data = action.payload;
+      console.log(data);
+      // const index = state.data.findIndex(x => {
+      //   return id === x.id;
+      // });
+      // let arr = [...state.data];
+      // arr.splice(index, 1);
+      // let obj = {
+      //   ...state,
+      //   data: data,
+      // };
+      return data;
     }
     case actions.DELETE_ALL: {
       const data = action.payload;
-      const listIndex = data.map(x => x.id);
+      const listIndex = data.map((x) => x.id);
       const arr = [...state.data];
       for (let key of listIndex) {
-        let index = arr.findIndex(x => x.id === key);
+        let index = arr.findIndex((x) => x.id === key);
         arr.splice(index, 1);
       }
       let obj = {
         data: arr,
         pagination: {
           ...state.pagination,
-          _totalRows: state.pagination._totalRows - listIndex.length
-        }
-      }
+          _totalRows: state.pagination._totalRows - listIndex.length,
+        },
+      };
 
       return obj;
     }
@@ -102,7 +103,6 @@ const reducer = (state = initialState, action) => {
       return state;
     }
   }
-
 };
 
 export default reducer;

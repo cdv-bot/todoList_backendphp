@@ -4,7 +4,14 @@ import { withRouter } from 'react-router';
 import productApi from '../apis/productsApi';
 import Footer from '../footer';
 import Header from '../header';
-import { checkerItem, DataAddList, deleteItems, nextPage, numberPage, repairItem } from './../Actions';
+import {
+  checkerItem,
+  DataAddList,
+  deleteItems,
+  nextPage,
+  numberPage,
+  repairItem,
+} from './../Actions';
 import Loading from './loading';
 import './style.scss';
 
@@ -25,7 +32,7 @@ class Todo extends Component {
       id: null,
       sumList: 0,
       idPage: 1,
-      action: "ALL"
+      action: 'ALL',
     };
   }
 
@@ -77,16 +84,16 @@ class Todo extends Component {
   };
 
   //delete one
-  handeDeleteOne = (id) => {
-    this.setState({
+  handeDeleteOne = async (id) => {
+    await this.setState({
       deleteId: id,
     });
+    this.props.deleteItems(id, this.state.idPage);
     setTimeout(() => {
-      this.props.deleteItems(id, this.state.idPage);
       this.setState({
         deleteId: null,
       });
-    }, 500);
+    }, 1000);
   };
 
   //outfocus
@@ -153,8 +160,8 @@ class Todo extends Component {
   handleScroll = () => {
     this.scroll.scrollIntoView();
     this.setState({
-      idPage: 1
-    })
+      idPage: 1,
+    });
   };
 
   show = () => {
@@ -173,27 +180,25 @@ class Todo extends Component {
             )}
           </div>
           <div className="list_data" onDoubleClick={() => this.handTogger(key.id, key.content)}>
-            {
-              toggle.id !== key.id ? (
-                <div className="text_time">
-                  <label className={`text_data ${key.checks ? 'unfinished' : ''}`}>
-                    {key.content}
-                  </label>
-                  <span>{this.handleTime(key.time)}</span>
-                </div>
-              ) : (
-                <form onSubmit={this.submitFix} className="form_fix">
-                  <input
-                    className="ip_hide"
-                    type="text"
-                    ref={this.focusRef}
-                    value={valueFix}
-                    onBlur={() => this.outFocus(key.id)}
-                    onChange={this.onValueFix}
-                  />
-                </form>
-              )
-            }
+            {toggle.id !== key.id ? (
+              <div className="text_time">
+                <label className={`text_data ${key.checks ? 'unfinished' : ''}`}>
+                  {key.content}
+                </label>
+                <span>{this.handleTime(key.time)}</span>
+              </div>
+            ) : (
+              <form onSubmit={this.submitFix} className="form_fix">
+                <input
+                  className="ip_hide"
+                  type="text"
+                  ref={this.focusRef}
+                  value={valueFix}
+                  onBlur={() => this.outFocus(key.id)}
+                  onChange={this.onValueFix}
+                />
+              </form>
+            )}
           </div>
           <i
             className="far fa-trash-alt icon_delete"
@@ -208,73 +213,75 @@ class Todo extends Component {
   handlePage = (data, action) => {
     this.props.nextPage(data, action);
     this.setState({
-      idPage: data
-    })
-  }
+      idPage: data,
+    });
+  };
   mapPage = () => {
     const { pagination } = this.props.arrList;
     if (pagination === null || pagination._totalRows === 0) {
-      return (
-        <div className="btPage" >
-          1
-        </div>
-      );
+      return <div className="btPage">1</div>;
     }
 
     let arr = [];
     let sumPage = Math.ceil(pagination._totalRows / 7);
     for (let i = 1; i <= sumPage; i++) {
       arr.push(
-        <div key={i} >
+        <div key={i}>
           <div
-            style={this.state.idPage === i ? {
-              background: 'blue',
-              color: 'white'
-            } : null}
-            className="btPage" onClick={() => {
+            style={
+              this.state.idPage === i
+                ? {
+                    background: 'blue',
+                    color: 'white',
+                  }
+                : null
+            }
+            className="btPage"
+            onClick={() => {
               if (this.state.idPage !== i) {
                 this.handlePage(i, this.state.action);
               } else {
                 return false;
               }
-            }} >
+            }}
+          >
             {i}
           </div>
-        </div>)
+        </div>
+      );
     }
     return arr;
-  }
+  };
 
   actionPages = (x) => {
     this.setState({
       action: x,
-      idPage: 1
+      idPage: 1,
     });
-  }
+  };
   componentDidMount() {
     const { history } = this.props;
     if (localStorage.getItem('hash')) {
-      productApi.checkAccount({
-        hash: localStorage.getItem('hash')
-      }).then(data => {
-        if (data.length === 0) {
-          console.log(data)
-          history.push('/')
-        }
-      })
+      productApi
+        .checkAccount({
+          hash: localStorage.getItem('hash'),
+        })
+        .then((data) => {
+          if (data.length === 0) {
+            console.log(data);
+            history.push('/');
+          }
+        });
     } else {
       history.push('/');
     }
-
   }
   render() {
     const { loadingShow } = this.props;
 
     return (
       <div className="All">
-        {
-          loadingShow ? null : <Loading />
-        }
+        {loadingShow ? null : <Loading />}
         <div className="input_add">
           <Header handlerValue={this.handleValues} refInput={this.handleScroll} />
         </div>
@@ -287,9 +294,7 @@ class Todo extends Component {
           <div className="bt_check" counts={this.props.arrList.data}>
             <Footer actionPage={(x) => this.actionPages(x)} />
           </div>
-          <div className='page'>
-            {this.mapPage()}
-          </div>
+          <div className="page">{this.mapPage()}</div>
         </div>
       </div>
     );
@@ -308,6 +313,6 @@ const mapDispatchToProps = {
   checkerItem,
   deleteItems,
   numberPage,
-  nextPage
+  nextPage,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Todo));

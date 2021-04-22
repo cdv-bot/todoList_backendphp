@@ -13,8 +13,8 @@ class ProductApi {
         _sort: 'time',
         _order: 'desc',
         _page: 1,
-        _limit: 7
-      }
+        _limit: 7,
+      },
     });
   };
   getListPage = () => {
@@ -28,26 +28,26 @@ class ProductApi {
   putItem = (params, id) => {
     const url = '/todolist';
     return axiosClient.patch(`${url}/${id}`, params);
-  }
+  };
   checkItem = (params, id) => {
     const url = '/todolist';
     return axiosClient.patch(`${url}/${id}`, params);
-  }
+  };
   deleteItem = (id) => {
     const url = '/todolist';
     return axiosClient.delete(`${url}/${id}`);
-  }
-  nextPage = (page, action) => {
+  };
+  nextPage = (page) => {
     const url = '/todolist';
     return axiosClient.get(url, {
       params: {
         _sort: 'id',
         _order: 'desc',
         _page: page,
-        _limit: 7
-      }
+        _limit: 7,
+      },
     });
-  }
+  };
 
   checkAccount = (params) => {
     const url = '/account';
@@ -57,22 +57,22 @@ class ProductApi {
     const url = '/account';
     return axiosClient.get(url, {
       params: {
-        hash
-      }
+        hash,
+      },
     });
   };
   fixHash = (id, hash) => {
     const url = '/account';
     return axiosClient.patch(`${url}/${id}`, {
-      hash
+      hash,
     });
   };
   checkuser = (user) => {
     const url = '/account';
     return axiosClient.get(url, {
       params: {
-        user
-      }
+        user,
+      },
     });
   };
 
